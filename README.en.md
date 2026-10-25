@@ -2,12 +2,12 @@
 
 [中文版](README.md) · [Full write-up (Chinese)](docs/deployment-story.md)
 
-A complete, reproducible setup for serving **Qwen3.5-9B** on a laptop with a single
+A working setup for serving **Qwen3.5-9B** on a laptop with a single
 **RTX 4060 Laptop 8GB** GPU, then plugging it into **DSH** (a DeepSeek-Harness-based
 agent framework) as a secondary model.
 
-Everything lives in one directory. No registry writes, no Windows services, no files
-in `C:\Users\*`.
+Everything lives in one folder. Delete `D:\local-llm` and it's gone — nothing is
+installed elsewhere on the system.
 
 > **TL;DR** — 40 tok/s generation, 64K context, 6.5 GB VRAM, ~30 min to set up.
 > Reliable at extraction and instruction-following; unreliable at anything requiring

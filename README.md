@@ -2,10 +2,10 @@
 
 [English](README.en.md)
 
-在 **RTX 4060 Laptop 8GB** / **Intel Core Ultra 9 185H** / **16GB DDR5** 上跑本地
-LLM 的完整部署。全部文件关在 `D:\local-llm`，不写注册表、不装系统服务、不碰 C 盘用户目录。
+在 RTX 4060 Laptop 8GB、16GB 内存的笔记本上把 Qwen3.5-9B 跑起来，并接进 DSH 当副手模型。
+所有东西都在 `D:\local-llm` 一个目录里，删掉这个目录就算卸载干净了。
 
-**状态**：已跑通并实测，已接入 DSH 验证。默认 Qwen3.5-9B ／ 64K 上下文 ／ 40 tok/s。
+**状态**：已跑通并实测，已接入 DSH 验证。默认 Qwen3.5-9B，64K 上下文，40 tok/s。
 
 - 完整部署过程与踩坑实录：**[docs/deployment-story.md](docs/deployment-story.md)**（开发者向，含排障方法论）
 - 接入 DSH 的配置与排错：**[config/dsh-route.yaml](config/dsh-route.yaml)**
