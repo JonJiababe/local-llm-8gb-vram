@@ -8,7 +8,11 @@
 **状态**：已跑通并实测，已接入 DSH 验证。默认 Qwen3.5-9B，64K 上下文，40 tok/s。
 
 - 完整部署过程与踩坑实录：**[docs/deployment-story.md](docs/deployment-story.md)**（开发者向，含排障方法论）
+- 实际使用记录（持续更新）：**[docs/usage-log.md](docs/usage-log.md)**
 - 接入 DSH 的配置与排错：**[config/dsh-route.yaml](config/dsh-route.yaml)**
+
+> 跑分和压测解决的是"理论上能到什么程度"，`usage-log.md` 记的是真用下来碰到的、
+> 包括把之前判断推翻的那些。
 
 ---
 
@@ -18,6 +22,7 @@
 D:\local-llm\
 ├─ README.md                  ← 本文件
 ├─ docs\deployment-story.md   ← 全过程实录（开发者向）
+├─ docs\usage-log.md          ← 实际使用记录（持续更新）
 ├─ README.en.md               ← 英文版
 ├─ bin\llama\                 ← llama.cpp 运行时（便携版，不注册任何东西）
 │   ├─ llama-server.exe

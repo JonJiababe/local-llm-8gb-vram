@@ -236,6 +236,7 @@ most effective answer.**
 ```
 ├─ README.md / README.en.md
 ├─ docs/deployment-story.md   full write-up: measurements, pitfalls, debugging methodology
+├─ docs/usage-log.md          real-world usage log, updated as I keep using it
 ├─ scripts/
 │  ├─ env.ps1                 the only file you normally edit
 │  ├─ start.ps1 stop.ps1 status.ps1
