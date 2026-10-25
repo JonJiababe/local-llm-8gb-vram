@@ -1,0 +1,19 @@
+# 运行时（633MB，换机器时重新下载，别进 git）
+bin/llama/
+bin/*.zip
+bin/*.parts/
+
+# 权重（7.8GB，用 scripts\pull-model.ps1 重新拉）
+models/gguf/*.gguf
+
+# 日志
+logs/*.log
+logs/*.err.log
+
+# 实测结果看要不要留：留证据就提交，嫌吵就忽略
+# bench/
+
+# 系统垃圾
+Thumbs.db
+desktop.ini
+.DS_Store

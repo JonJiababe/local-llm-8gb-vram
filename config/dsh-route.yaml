@@ -1,0 +1,77 @@
+# =====================================================================
+# 把本地模型接进 DSH（llm-pi-ai 插件）—— 已验证可用
+#
+# 前置：llama-server 已在跑
+#   D:\local-llm\scripts\start.ps1
+#   验证：curl http://127.0.0.1:8080/v1/models   → 应返回 qwen3.5-9b
+#
+# llm-pi-ai 是 web profile 已挂载的插件，不需要安装任何东西。
+# 已实测通过：纯文本、流式(SSE)、system 角色、工具调用、简单结构化输出。
+# 未通过：多步工具调用 + 复杂结构化 schema 的组合。
+# =====================================================================
+
+# ---------------------------------------------------------------------
+# 第 1 步：加路由配置
+#   合并进 ~/.dsh/settings.yaml（Windows 上是 C:\Users\<你的用户名>\.dsh\settings.yaml）
+#   已有 llm-pi-ai 段就加一条 provider，别整段覆盖。
+#
+# llm-pi-ai:
+#   providers:
+#     local-llama:
+#       displayName: 本地 Qwen3.5-9B (llama.cpp)
+#       api: openai-completions
+#       apiKeyEnv: LOCAL_LLAMA_API_KEY      # ⚠️ 必须！省略会让路由静默失效
+#       baseURL: http://127.0.0.1:8080/v1
+#
+#       # llama-server 是"长得像 OpenAI、细节不太像"的端点，这三项必须声明
+#       compat:
+#         supportsDeveloperRole: false      # 不认 developer 角色
+#         maxTokensField: max_tokens        # 不吃 max_completion_tokens
+#         supportsReasoningEffort: false    # 别发 reasoning_effort
+#
+#       timeoutMs: 900000                 # 本地模型首字慢，给足 15 分钟
+#       streamIdleTimeoutMs: 900000
+#
+#       models:
+#         - id: qwen3.5-9b                # = env.ps1 的 $ModelAlias
+#           name: Qwen3.5-9B (本地)
+#           contextWindow: 65536          # 必须 ≤ env.ps1 的 $LlamaCtx
+#           maxTokens: 8192
+# ---------------------------------------------------------------------
+# 第 2 步：加占位凭据（本地服务不校验，但 DSH 要求 ref 能解析）
+#
+#   ~/.dsh/.credentials.yaml（明文）
+#   refs:
+#     LOCAL_LLAMA_API_KEY: local-no-auth
+# ---------------------------------------------------------------------
+# 改完即时生效：dsh-settings-file 用 chokidar 监听，debounce 100ms。
+# 不用重启 dsh web。
+# =====================================================================
+
+# =====================================================================
+# 排错：按这个顺序查，能省掉大量时间
+#
+# ① 对端日志有没有收到请求？（最有效的一步）
+#      Get-Content D:\local-llm\logs\llama-server.log -Tail 20 | Select-String 'print_timing'
+#    · 有 print_timing  → DSH 已经打过来了，问题在模型输出/解析上
+#    · 日志一动不动     → DSH 侧没发请求，问题在 settings/凭据，去看下面 ②③
+#
+# ② 路由是不是根本没注册？
+#      最常见原因就是缺 apiKeyEnv。省略它不会有任何报错，
+#      路由就是不出现，调用方只拿到 null。
+#
+# ③ 请求被 400 拒掉？
+#      compat 没生效。确认 api 是 openai-completions，
+#      且 supportsDeveloperRole / maxTokensField 都在。
+#
+# ④ 报 context length exceeded？
+#      settings 的 contextWindow > env.ps1 的 $LlamaCtx。两边改成同一个数字。
+#
+# ⑤ 回复为空、finish_reason=length？
+#      思考把 token 吃光了。关思考（env.ps1 里 $LlamaThinking = 'off'）
+#      或加大 maxTokens。
+#
+# ⑥ 慢到怀疑人生？
+#      .\scripts\status.ps1 看显存。占用明显小于权重体积，说明有层跑在 CPU 上
+#      （通常是缺 cudart64_12.dll，llama-server --list-devices 会是 (none)）。
+# =====================================================================
